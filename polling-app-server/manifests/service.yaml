@@ -2,7 +2,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: polling-server
-  namespace: course
+  namespace: test 
   labels:
     ref: dev 
 spec:

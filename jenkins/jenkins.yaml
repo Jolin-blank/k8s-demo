@@ -51,6 +51,9 @@ spec:
         - name: jenkinshome
           subPath: jenkins2
           mountPath: /var/jenkins_home
+        env:
+        - name: JAVA_OPTS
+          value: -Dhudson.security.csrf.GlobalCrumbIssuerConfiguration.DISABLE_CSRF_PROTECTION=true
       securityContext:
         fsGroup: 1000
       volumes:

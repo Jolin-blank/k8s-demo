@@ -1,0 +1,5 @@
+jenkins-slave/docker
+jenkins-slave/jdk1.8.0_151/
+jenkins-slave/kubectl
+jenkins-slave/slave.jar
+

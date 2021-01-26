@@ -1,0 +1,23 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: harbor
+  namespace: harbor
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`harbor.med.gzhc365.com`)
+    kind: Rule
+    services:
+    - name: myharbor-harbor-portal 
+      namespace: harbor
+      port: 80
+  - match: Host(`harbor.med.gzhc365.com`) && PathPrefix(`/api/`, `/service/`, `/v2/`, `/chartrepo/`, `/c/`)
+    kind: Rule
+    services:
+    - name: myharbor-harbor-core 
+      namespace: harbor
+      port: 80
+  tls:
+    secretName: harbor-gzhc-tls 

@@ -1,0 +1,17 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: jenkins
+  namespace: kube-ops
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`jenkins.med.gzhc365.com`)
+    kind: Rule
+    services:
+    - name: jenkins2 
+      namespace: kube-ops 
+      port: 8080
+  tls:
+    secretName: jenkins-tls 

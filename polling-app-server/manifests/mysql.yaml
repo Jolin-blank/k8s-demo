@@ -1,0 +1,66 @@
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  name: mysql
+  namespace: test
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: mysql
+        image: mysql:5.7
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3306
+          name: dbport
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: rootPassW0rd
+        - name: MYSQL_DATABASE
+          value: polling_app
+        - name: MYSQL_USER
+          value: polling
+        - name: MYSQL_PASSWORD
+          value: polling321
+        volumeMounts:
+        - name: db
+          mountPath: /var/lib/mysql
+      volumes:
+        - name: db
+          persistentVolumeClaim:
+            claimName: dbpvc
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: mysql
+  namespace: test
+spec:
+  selector:
+    app: mysql
+  type:  ClusterIP
+  ports:
+  - name: dbport
+    port: 3306
+    targetPort: dbport
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: dbpvc
+  namespace: test
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: rook-ceph-block
+

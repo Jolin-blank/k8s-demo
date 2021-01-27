@@ -1,0 +1,18 @@
+def label = "slave-${UUID.randomUUID().toString()}"
+podTemplate(label: label, serviceAccount: 'jenkins2', containers: [
+  containerTemplate(name: 'maven', image: 'maven:3.6-alpine', command: 'cat', ttyEnabled: true),
+  containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
+  containerTemplate(name: 'kubectl', image: 'cnych/kubectl', command: 'cat', ttyEnabled: true)
+], volumes: [
+  hostPathVolume(mountPath: '/root/.m2', hostPath: '/var/run/m2'),
+  hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
+]){
+    node(label){
+stage('运行 Kubectl') {
+    withCredentials([kubeconfigFile(credentialsId: 'kubeconfig1', variable: 'KUBECONFIG')]) {
+      container('kubectl') {
+     sh 'kubectl get  pods' }
+    }
+   }
+  }
+ }
